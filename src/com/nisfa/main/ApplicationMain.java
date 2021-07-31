@@ -16,6 +16,9 @@ public class ApplicationMain {
 		// TODO Auto-generated method stub
 		
 		System.out.println("Happy Learning");
+		
+		System.out.println("Stay Healthy & Be Optimist");
+		
 
 	}
 
