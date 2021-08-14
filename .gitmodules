@@ -1,0 +1,3 @@
+[submodule "greet"]
+	path = greet
+	url = https://github.com/MohamedFaruk-M/java-basics.git
