@@ -1,3 +1,6 @@
 [submodule "greet"]
 	path = greet
 	url = https://github.com/MohamedFaruk-M/java-greet.git
+[submodule "welcome"]
+	path = welcome
+	url = https://github.com/MohamedFaruk-M/java-welcome.git
