@@ -4,3 +4,6 @@
 [submodule "welcome"]
 	path = welcome
 	url = https://github.com/MohamedFaruk-M/java-welcome.git
+[submodule "advance"]
+	path = advance
+	url = https://github.com/MohamedFaruk-M/java-advance.git
