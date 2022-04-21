@@ -1,5 +1,8 @@
-# Java
-In Depth Basics-Pro
+<style>
+    red {color:red}
+    green {color:green}
+</style>
+
 
 ## Time to have a quick notes on what we've learned
 
@@ -7,6 +10,8 @@ In Depth Basics-Pro
 1. [Interfaces](#interfaces)
     1. [Default Methods](#default-methods)
 1. [Jvm Internals](#jvm-internals)
+1. [Exceptions](#exceptions)
+
 
 ### Constructor Overloading
 _Thumb Rule:_
@@ -38,15 +43,15 @@ _Thumb Rule:_
     }
     ```
 
-+ ### Default Methods
++ #### Default Methods
     1. can be implemented since **Java 1.8** 
     1. is binary compatible (i.e no need to recompile the implementation code) rather _source compatbile_
     1. can be invoked only via instance not via Reference type
     1. **_Thumb rule_** on managing conflict resolution strategy across different context:
-        - ### method overriding
+        - ##### method overriding
             + Always class wins over interface 
             + Hierarchically sub type of interface always wins over super type.
-        - ### method invocation
+        - ##### method invocation
             ``` JAVA
             public interface A {
                 void foo();
@@ -112,7 +117,7 @@ _Thumb Rule:_
             + Class object retrieves the meta information from class data while dealing with reflection
         1. Run time Constant Pool
         1. Field Info (Name, Type & Modifiers like final, static, public)
-        1. 
+        1. Method bytecode
     - Method Table
         1. An array object contains the reference of starting addresses of all the methods available in this class via method bytecode
     - Stack
@@ -127,7 +132,7 @@ _Thumb Rule:_
 
 + Garbage collection
 
-    - _Thumb Rule_:
+    - __Thumb Rule__:
         * Identify the live objects
         * With minimal *stop-the-world*
 
@@ -142,7 +147,60 @@ _Thumb Rule:_
             1. to
         * full GC
             1. run after n-th (default=15) iteration of minor GC
-        * Further optimize Pause-time via
-            1. SingleGC
-            1. MultipleGC
-            1. CMS (Mostly Concurrent Mark Sweep)
+        * Further optimizing Pause-time via
+            Types | Young Gen| Tenured Gen |
+            :---|:---|:---|
+            SingleGC | Mark & Copy | Mark-Sweep-Compact|
+            MultipleGC | Mark & Copy | Mark-Sweep-Compact|
+            CMS | Mark & Copy | Concurrent Mark-Sweep (Mostly)|
+
+### Exceptions
++ Types
+    * __Checked__
+    * _UnChecked_
++ Inheritance Tree Structure
+    * Throwable
+        - Exception
+            1. __IOException__
+                1. FileNotFoundException
+            1. _Runtime Exception_
+                1. NullPointerException
+                1. ArrayOutOfBoundException
+                1. IllegalAccessException
+                1. ClassCastException
+        - _Errors_
+            1. VirtualMachineError
+                1. OutOfMemoryError
+            1. LinkageError
+                1. NoClassDefFoundError
+
++ **Thumb rule** on Method Overriding
+    * *SuperClass throws CheckedExceptions*, then
+        <p>
+        <green>
+        1. SubClass throws CheckedExceptions | SubType of CheckedExceptions | No Exceptions<br/>
+        2. SubClass throws UnCheckedExceptions<br/>
+        </p>
+        <p>
+        <red>
+        1. SubClass does not throw ParentType of CheckedExceptions otherwise it violates the contract
+        </red>
+        </p>
+
+    * *SuperClass throws UnCheckedExceptions*, then
+        <p>
+        <green>
+        1. SubClass throws UnCheckedExceptions | SubType of UnCheckedExceptions | No Exceptions<br/>
+        </green>
+        <red>
+        1. SubClass doesn't throws neither ParentType of UnCheckedException nor CheckedExceptions otherwise it breach the contract
+        </red>
+        </p>
+
++ try-with-resources
+    ``` JAVA
+    try (java.lang.AutoCloseable) {}
+    ```
+    * Needs to clarify/recap
+        1. what would happen if close() throws IOException which is not being captured in the upper hierarchy (invoking method)
+            - Ans: Since IOException is checkedException, compiler will generate error neither the exception is handled nor it is declared as throws clause.
