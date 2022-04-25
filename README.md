@@ -11,7 +11,7 @@
     1. [Default Methods](#default-methods)
 1. [Jvm Internals](#jvm-internals)
 1. [Exceptions](#exceptions)
-
+1. [I/O](#i/o)
 
 ### Constructor Overloading
 _Thumb Rule:_
@@ -176,31 +176,99 @@ _Thumb Rule:_
 
 + **Thumb rule** on Method Overriding
     * *SuperClass throws CheckedExceptions*, then
-        <p>
+        <ol>
         <green>
         1. SubClass throws CheckedExceptions | SubType of CheckedExceptions | No Exceptions<br/>
         2. SubClass throws UnCheckedExceptions<br/>
-        </p>
-        <p>
+        </green>
         <red>
         1. SubClass does not throw ParentType of CheckedExceptions otherwise it violates the contract
         </red>
-        </p>
+        </ol>
 
     * *SuperClass throws UnCheckedExceptions*, then
-        <p>
+        <ol>
         <green>
         1. SubClass throws UnCheckedExceptions | SubType of UnCheckedExceptions | No Exceptions<br/>
         </green>
         <red>
-        1. SubClass doesn't throws neither ParentType of UnCheckedException nor CheckedExceptions otherwise it breach the contract
-        </red>
-        </p>
+        1. SubClass doesn't throw neither ParentType of UnCheckedException nor CheckedExceptions otherwise it breach the contract
+        </red><br/>
+            but for convention, UnChecked Ex should be added in DOCs not in Declaration.
+        </ol>
 
 + try-with-resources
     ``` JAVA
-    try (java.lang.AutoCloseable) {}
+    try (final obj = java.lang.AutoCloseable) {}
     ```
-    * Needs to clarify/recap
+    * Needs to clarify/recap: calrified
         1. what would happen if close() throws IOException which is not being captured in the upper hierarchy (invoking method)
             - Ans: Since IOException is checkedException, compiler will generate error neither the exception is handled nor it is declared as throws clause.
+    * Items from Effective JAVA about Exception: 
+        - should be used only in handling Exceptional situation
+        - shouldn't be ignored by placing empty body
+        - UnChecked Exception should be documented properly with possible use cases.
+        - should be used in form of more specific rather than Generic types
+        - should be wrapped up with Higher level and Lower level environment details (by means of translation & chaining)
+
+### I/O
++ Encoding-Scheme
+    - Unicode
+        1. UTF-8
+        1. UTF-16
+        1. UTF-16BE
+        1. UTF-16LE
+    - BMP (Basic Multilingual Plane)
+        - represented by 1 code point (16 bit)
+    - Supplementary (Non-BMP)
+        - represented by 2 code point (4 bytes)
+
++ Streams Classification over source/sink:
+    - Byte Streams
+        * InputStream
+            1. FileInputStream
+            1. FilterInputStream
+                1. BufferedInputStream
+            1. DataInputStream
+        * OutputStream
+            1. FileOutputStream
+            1. FilterOutputStream
+                1. BufferedOutputStream
+            1. DataOutputStream        
+    - Character Streams
+        * Reader
+            1. FileReader(Reader)
+            1. InputStreamReader(InputStream)
+            1. BufferedReader(Reader)
+        * Writer
+            1. FileWriter(Writer)
+            1. OutputStreamWriter(OutputStream)
+            1. BufferedWriter(Writer)
+
++ (De) Serialization:
+    * __Thumb Rule__:\
+        - Serialization
+            1. The object being serialized must implement Serializable
+            1. Also the same is applicable for it's Object graph
+            1. Multiple references of the same object over the graph path will be serialized only once.
+                1. Serialization happened only at the first attempt
+                1. Reset of them uses the same serialized reference. 
+        - DeSerialization:
+            <ol><green>
+            1. add/delete instance variables/methods<br/>
+            2. change access modifiers<br/>
+            3. change static member to instance member
+            </green></ol>
+            <ol><red>
+            1. shouldn't change the field type<br/>
+            2. shouldn't remove the Serializable implements over the object graph path<br/>
+            </red></ol>
+    * Helper Class:
+        - ObjectInputStream implements ObjectInput
+            1. is.readObject();
+        - ObjectOutputStream implements ObjectOutput
+            1. os.writeOject(Object instanceof primitive|Arrays|String|Enum|Serializable);
+        1. *Symmentric Iteration order* needs to be maintained over read and write operation
+    * Interesting Facts:
+        - DeSerialization won't invoke constructor unless untill any of the Ancestors doesn't implement Serializable
+    
